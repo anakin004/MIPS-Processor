@@ -1,1 +1,1 @@
-Mips proccessor simulated in c
+Mips proccessor simulated in C
