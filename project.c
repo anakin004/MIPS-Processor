@@ -38,16 +38,9 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
             *ALUresult = ~A;
             break;
         
-        default: //invalid case
-            //setting global halt to 1 
-            Halt = 1;
+        default:
             break;
     }
-
-    //setting zero to 1 if result is 0, else 0
-    if( !Halt) 
-        *Zero = (*ALUresult == 0) ? 1 : 0;
-
 }
 
 /* instruction fetch */
