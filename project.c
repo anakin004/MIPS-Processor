@@ -73,9 +73,24 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
     // last 6 bits
     *op = instruction >> 25;
 
-    // last 12 bits but we & with 0000 0001 1111
+    // last 12 bits but we & with 0000 0000 0000 0000 0000 0000 0001 1111
     // to get the 5 bits we want
     *r1 = instruction >> 20 & 0x01F;
+
+    // keeping last 5 bits of the shift
+    *r2 = (instruction >> 16) & 0x1F;
+
+    // keeping last 5 bits of shift
+    *r3 = (instruction >> 11) & 0x1F;
+
+    // keeping last 6 bits after shift
+    *funct = instruction & 0x3F;
+
+    // keeping last 16 bits 
+    *offset = instruction & 0xFFFF;
+
+    // keep last 26 bits
+    *jsec = instruction & 0x3FFFFFF;
 
 }
 
