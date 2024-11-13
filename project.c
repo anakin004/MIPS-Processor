@@ -96,16 +96,101 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
 
 
 
+
 /* instruction decode */
 int instruction_decode(unsigned op,struct_controls *controls)
 {
+    // init all control signals to zero by default
+
+    controls->ALUSrc = 0;
+    controls->RegDst = 0;
+    controls->RegWrite = 0;
+    controls->MemRead = 0;
+    controls->MemWrite = 0;
+    controls->MemtoReg = 0;
+    controls->Branch = 0;
+    controls->Jump = 0;
+    controls->ALUOp = 0;
+
+    switch( op) {
+
+        // r type (add,sub,stl,and,or)
+        case 0:
+            controls->ALUSrc = 0;
+            controls->RegDst = 1;
+            controls->RegWrite = 1;
+            controls->MemtoReg = 0;
+            controls->MemRead = 0;
+            controls->MemWrite = 0;
+            controls->Branch = 0;
+            controls->Jump = 0;
+            controls->ALUOp = 2;
+            break;
+
+        // load word
+        case 35:
+            controls->ALUSrc = 1;
+            controls->RegDst = 0;
+            controls->RegWrite = 1;
+            controls->MemtoReg = 0;
+            controls->MemRead = 1;
+            controls->MemWrite = 0;
+            controls->Branch = 0;
+            controls->Jump = 0;
+            controls->ALUOp = 0;
+            break;
+
+        // store word
+        case 43:
+            controls->ALUSrc = 1;
+            controls->RegDst = 'X';
+            controls->RegWrite = 0;
+            controls->MemtoReg = 'X';
+            controls->MemRead = 0;
+            controls->MemWrite = 1;
+            controls->Branch = 0;
+            controls->Jump = 0;
+            controls->ALUOp = 0;
+            break;
+        
+        // beq
+        case 4:
+            controls->ALUSrc = 0;
+            controls->RegDst = 'X';
+            controls->RegWrite = 0;
+            controls->MemtoReg = 'X';
+            controls->MemRead = 0;
+            controls->MemWrite = 0;
+            controls->Branch = 1;
+            controls->Jump = 0;
+            controls->ALUOp = 1;
+            break;
+
+        // jump
+
+        case 2:
+            controls->ALUSrc = 0;
+            controls->RegDst = 'X';
+            controls->RegWrite = 0;
+            controls->MemtoReg = 'X';
+            controls->MemRead = 0;
+            controls->MemWrite = 0;
+            controls->Branch = 0;
+            controls->Jump = 1;
+            controls->ALUOp = 0;
+            break;
+        
+        default:
+            return 1;
+    }
 
 }
 
 /* Read Register */
 void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigned *data2)
 {
-
+    *data1 = Reg[r1];
+    *data2 = Reg[r2];
 }
 
 
