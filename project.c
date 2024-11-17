@@ -59,15 +59,7 @@ int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsigned *r2, unsigned *r3, unsigned *funct, unsigned *offset, unsigned *jsec)
 {
     /*
-    for refrece:
-
-    unsigned op,	// instruction [31-26]
-	r1,	// instruction [25-21]
-	r2,	// instruction [20-16]
-	r3,	// instruction [15-11]
-	funct,	// instruction [5-0]
-	offset,	// instruction [15-0]
-	jsec;	// instruction [25-0]
+    refrence spincore.c for instruction layout
     */
 
     // last 6 bits
