@@ -224,6 +224,30 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
 }
 
 /* Read / Write Memory */
+
+/*
+Function Behavior
+
+Inputs:
+    ALUresult: The memory address to read/write.
+    data2: The data to write to memory (used if MemWrite is asserted).
+    MemWrite: Indicates if a memory write should occur.
+    MemRead: Indicates if a memory read should occur.
+    Mem: The memory array.
+    memdata: Pointer to store the read memory value (used if MemRead is asserted).
+
+Checks:
+    Ensure ALUresult is word-aligned (ALUresult % 4 == 0).
+    Ensure the address is within bounds (0 to the size of memory).
+
+Operations:
+    If MemWrite is asserted, write data2 to the memory at ALUresult.
+    If MemRead is asserted, read memory at ALUresult into memdata.
+
+Return Value:
+    Return 1 if a halt condition occurs (e.g., misaligned address).
+    Return 0 otherwise.
+*/
 int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsigned *memdata,unsigned *Mem)
 {
 
@@ -257,6 +281,29 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
 
 
 /* Write Register */
+/*Function Behavior
+
+Inputs:
+    r2, r3: Register indices to determine the destination register.
+    memdata: Data read from memory (if MemtoReg is asserted).
+    ALUresult: Data from the ALU operation.
+    RegWrite: Control signal indicating whether a register write occurs.
+    RegDst: Control signal to select the destination register (R-type vs I-type).
+    MemtoReg: Control signal to select the data source (memory vs ALU result).
+    Reg: The register array.
+
+Operation:
+    Check if RegWrite is enabled.
+    Determine the destination register:
+        If RegDst == 1: Use r3 (R-type instruction).
+        If RegDst == 0: Use r2 (I-type instruction).
+    Determine the data to write:
+        If MemtoReg == 1: Use memdata (data from memory).
+        If MemtoReg == 0: Use ALUresult (data from the ALU).
+    Write the data to the determined destination register.
+
+Return Value:
+    This function doesn't return a value; it directly modifies the register array.*/
 void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,char RegWrite,char RegDst,char MemtoReg,unsigned *Reg)
 {
     
@@ -288,6 +335,19 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
 }
 
 /* PC update */
+/*Function Behavior
+Inputs:
+    jsec: The jump target (26-bit address).
+    extended_value: The sign-extended offset for branching.
+    Branch: Control signal for branch instructions.
+    Jump: Control signal for jump instructions.
+    Zero: ALU zero flag (used for conditional branching).
+    PC: Pointer to the program counter.
+
+Operation:
+    If Jump is 1, set PC to the jump address.
+    If Branch is 1 and Zero is 1, add the extended_value (offset) to the current PC + 4.
+     Otherwise, increment PC by 4 (default behavior).*/ 
 void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char Zero,unsigned *PC)
 {
 
