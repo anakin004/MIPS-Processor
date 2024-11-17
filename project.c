@@ -210,24 +210,89 @@ void sign_extend(unsigned offset,unsigned *extended_value)
     else
         *extended_value = offset & 0x0000FFFF;
 }
-
 /* ALU operations */
 int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigned funct,char ALUOp,char ALUSrc,unsigned *ALUresult,char *Zero)
 {
+    unsigned ALUControl;
+    unsigned operand2;
 
+    if (ALUSrc == 1)
+    {
+    operand2 = extended_value;
+    } else{
+    operand2 = data2;
+    }
+
+    if (ALUOp == 7)
+    { // R-type instruction
+        ALUControl = funct & 0x3F; // Extract lower 6 bits of function
+    } else{
+        ALUControl = ALUOp; // Direct ALUOp for non-R-type instructions
+    }
 }
 
 /* Read / Write Memory */
 int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsigned *memdata,unsigned *Mem)
 {
 
+    if (ALUresult % 4 != 0)
+    //Checking if the address is word-aligned
+    {
+        return 1; // Halt due to misaligned address
+    }
+
+    if (ALUresult / 4 >= 16384)
+    //Checking if the address is within memory bounds
+    { //64KB memory, each word is 4 bytes
+        return 1;//Halt due to out-of-bounds access
+    }
+
+    if (MemWrite)
+    //Perform memory write
+    {
+        Mem[ALUresult / 4] = data2;
+        // Write data2 to the memory
+    }
+
+    if (MemRead)
+    { //Perform memory read
+        *memdata = Mem[ALUresult / 4];
+        //Read from memory into memdata
+    }
+
+    return 0;
 }
 
 
 /* Write Register */
 void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,char RegWrite,char RegDst,char MemtoReg,unsigned *Reg)
 {
+    
+    if (RegWrite)
+    //Checking if RegWrite is enabled
+    {
+        unsigned destination; //The destination register
+        unsigned data;        //The data to write
 
+        if (RegDst)
+        //Determine the destination register
+        {
+            destination = r3; //R-type instruction
+        } else{
+            destination = r2; //I-type instruction
+        }
+
+        if (MemtoReg)
+        //Determine the data to write
+        {
+            data = memdata; //Data from memory
+        } else{
+            data = ALUresult; //Data from ALU
+        }
+
+        //Write the data to the register file
+        Reg[destination] = data;
+    }
 }
 
 /* PC update */
