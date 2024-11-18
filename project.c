@@ -211,13 +211,25 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
     if (ALUSrc == 1)
     {
     operand2 = extended_value;
-    } else{
+    } 
+    else{
     operand2 = data2;
     }
 
-    if (ALUOp == 7)
-    { // R-type instruction
-        ALUControl = funct & 0x3F; // Extract lower 6 bits of function
+    //Setting the ALUControl signal
+    if (ALUOp == 7) { // R-type instruction
+        // Determine ALUControl based on funct field
+        switch (funct & 0x3F) { // Use the lower 6 bits of funct
+            case 32: ALUControl = 0; break; // Add
+            case 34: ALUControl = 1; break; // Subtract
+            case 42: ALUControl = 2; break; // Set less than
+            case 43: ALUControl = 3; break; // Set less than unsigned
+            case 36: ALUControl = 4; break; // AND
+            case 37: ALUControl = 5; break; // OR
+            case 6:  ALUControl = 6; break; // Shift left
+            case 39: ALUControl = 7; break; // NOT
+            default: return 1; // Invalid funct, halt
+        }
     } else{
         ALUControl = ALUOp; // Direct ALUOp for non-R-type instructions
     }
@@ -321,16 +333,24 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
             destination = r2; //I-type instruction
         }
 
-        if (MemtoReg)
-        //Determine the data to write
+        //Ensuring the destination register is within valid bounds
+        if (destination >= 0 && destination < 32)
         {
-            data = memdata; //Data from memory
-        } else{
-            data = ALUresult; //Data from ALU
-        }
+            //Determine the data to write
+            if (MemtoReg)
+            {
+                data = memdata; //The Data from memory
+            } else
+            {
+                data = ALUresult; //The data from ALU
+            }
 
-        //Write the data to the register file
-        Reg[destination] = data;
+            //Writeing the data to the register file
+            Reg[destination] = data;
+        } else
+        {             //Handling invalid destination register (optional logging)
+            printf("Error: Attempt to write to an invalid register (%u).\n", destination);
+        }
     }
 }
 
@@ -350,6 +370,18 @@ Operation:
      Otherwise, increment PC by 4 (default behavior).*/ 
 void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char Zero,unsigned *PC)
 {
+    //This is the default behavior, it increment PC by 4
+    *PC += 4;
 
+    //Handling the Jump instruction
+    if (Jump)
+    {
+        *PC = (jsec << 2) | (*PC & 0xF0000000); //Combining the jump address with upper PC bits
+    }
+
+    // Handle Branch instruction
+    if (Branch && Zero) {
+        *PC += (extended_value << 2); // Add the branch offset (already sign-extended and shifted)
+    }
 }
 
