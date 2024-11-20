@@ -15,7 +15,7 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
             break;
         
         case 2: // A < B
-            *ALUresult = (A<B) ? 1 : 0;
+            *ALUresult = ((int)A < (int)B) ? 1 : 0;
             break;
         
         case 3: // A < B (both unsigned)
@@ -40,7 +40,10 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
         
         default:
             break;
+        
     }
+
+    *Zero = (*ALUresult == 0) ? 1 : 0;
 }
 
 /* instruction fetch */
