@@ -49,13 +49,15 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 /* instruction fetch */
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 {
-    *instruction = Mem[PC >> 2];
-
-    if( *instruction % 4 != 0 )
+    // checking if address is divisible by 4 for alignment
+    if ( PC % 4 != 0 )
         return 1;
 
-    return PC + 4;
+    *instruction = Mem[PC >> 2];
+
+    return 0;
 }
+
 
 
 /* instruction partition */
