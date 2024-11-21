@@ -208,35 +208,61 @@ void sign_extend(unsigned offset,unsigned *extended_value)
         *extended_value = offset & 0x0000FFFF;
 }
 /* ALU operations */
-int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigned funct,char ALUOp,char ALUSrc,unsigned *ALUresult,char *Zero)
-{
-    unsigned ALUControl;
-    unsigned operand2;
+int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsigned funct, char ALUOp, char ALUSrc,
+                   unsigned *ALUresult, char *Zero) {
+                    
+    data2 = ALUSrc == 1 ? extended_value : data2;
 
-    if (ALUSrc == 1)
-    {
-    operand2 = extended_value;
-    } 
-    else{
-    operand2 = data2;
-    }
-
-    //Setting the ALUControl signal
-    if (ALUOp == 7) { // R-type instruction
-        // Determine ALUControl based on funct field
-        switch (funct & 0x3F) { // Use the lower 6 bits of funct
-            case 32: ALUControl = 0; break; // Add
-            case 34: ALUControl = 1; break; // Subtract
-            case 42: ALUControl = 2; break; // Set less than
-            case 43: ALUControl = 3; break; // Set less than unsigned
-            case 36: ALUControl = 4; break; // AND
-            case 37: ALUControl = 5; break; // OR
-            case 6:  ALUControl = 6; break; // Shift left
-            case 39: ALUControl = 7; break; // NOT
-            default: return 1; // Invalid funct, halt
+    if (ALUOp == 7) {
+        switch (funct) {
+            case 32:
+                // adding
+                ALUOp = 0;
+                break;
+            case 34:
+                // sub
+                ALUOp = 0;
+                break;
+            case 36:
+                // and
+                ALUOp = 4;
+                break;
+            case 37:
+                // or
+                ALUOp = 5;
+                break;
+            case 42:
+                // stl signed
+                ALUOp = 2;
+                break;
+            case 43:
+                // stl unsigned
+                ALUOp = 3;
+                break;
+            default:
+                return 1;
         }
-    } else{
-        ALUControl = ALUOp; // Direct ALUOp for non-R-type instructions
+
+        // calling alu to execute alu
+        ALU(data1, data2, ALUOp, ALUresult, Zero);
+        return 0;
+    } else {
+        switch (ALUOp) {
+            case 0:
+                // addi, storeword, jump, load word
+            case 1:
+                // beq
+            case 2:
+                // stl signed
+            case 3:
+                // stl unsigned
+            case 6:
+                // load upper immediate
+                ALU(data1, data2, ALUOp, ALUresult, Zero);
+                return 0;
+            default:
+                return 1;
+        }
     }
 }
 
