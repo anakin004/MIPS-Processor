@@ -113,7 +113,7 @@ int instruction_decode(unsigned op,struct_controls *controls){
 
         // if its an r type funtion
 		case 0: 
-        	controls->MemtoReg = 0;
+        	    controls->MemtoReg = 0;
 		    controls->ALUOp = 7;
 		    controls->MemWrite = 0;
 		    controls->ALUSrc = 0;
@@ -126,7 +126,7 @@ int instruction_decode(unsigned op,struct_controls *controls){
 		
         //jump
 		case 2: 
-        	controls->MemtoReg = 0;
+        	    controls->MemtoReg = 0;
 		    controls->ALUOp = 0;
 		    controls->MemWrite = 0;
 		    controls->ALUSrc = 0;
@@ -138,7 +138,7 @@ int instruction_decode(unsigned op,struct_controls *controls){
 		    break;
 		//beq
 		case 4:  
-        	controls->MemtoReg = 2;
+        	    controls->MemtoReg = 2;
 		    controls->ALUOp = 1;
 		    controls->MemWrite = 0;
 		    controls->ALUSrc = 0;
@@ -149,9 +149,9 @@ int instruction_decode(unsigned op,struct_controls *controls){
 		    controls->MemRead = 0;
 		    break;
 
-        // sw
-        case 43:
-        	controls->MemtoReg = 2;
+     		   // sw
+      		case 43:
+        	    controls->MemtoReg = 2;
 		    controls->ALUOp = 0;
 		    controls->MemWrite = 1;
 		    controls->ALUSrc = 1;
@@ -162,8 +162,8 @@ int instruction_decode(unsigned op,struct_controls *controls){
 		    controls->MemRead = 0;
 		    break;
         
-        // lw
-        case 35:
+       		 // lw
+       		case 35:
         	controls->MemtoReg = 1;
 		    controls->ALUOp = 0;
 		    controls->MemWrite = 0;
@@ -178,7 +178,7 @@ int instruction_decode(unsigned op,struct_controls *controls){
 
 		 //stli unsigned
 		case 11: 
-        	controls->MemtoReg = 0;
+                    controls->MemtoReg = 0;
 		    controls->ALUOp = 3;
 		    controls->MemWrite = 0;
 		    controls->ALUSrc = 1;
@@ -191,7 +191,7 @@ int instruction_decode(unsigned op,struct_controls *controls){
 
 		//load upp i
 		case 15: 
-        	controls->MemtoReg = 0;
+        	    controls->MemtoReg = 0;
 		    controls->ALUOp = 6;
 		    controls->MemWrite = 0;
 		    controls->ALUSrc = 1;
@@ -204,7 +204,7 @@ int instruction_decode(unsigned op,struct_controls *controls){
 
         	//addi
 		case 8:
-        	controls->MemtoReg = 0;
+        	    controls->MemtoReg = 0;
 		    controls->ALUOp = 0;
 		    controls->MemWrite = 0;
 		    controls->ALUSrc = 1;
@@ -217,7 +217,7 @@ int instruction_decode(unsigned op,struct_controls *controls){
 
 		//stli
 		case 10:  
-        	controls->MemtoReg = 0;
+        	    controls->MemtoReg = 0;
 		    controls->ALUOp = 2;
 		    controls->MemWrite = 0;
 		    controls->ALUSrc = 1;
