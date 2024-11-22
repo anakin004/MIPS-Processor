@@ -2,6 +2,11 @@
 
 
 /* ALU */
+/*
+simple alu functinality,
+we switch the alucontrol to see which operation we do
+the operations are commented below
+*/
 void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 {
     switch((int)ALUControl)
@@ -47,6 +52,11 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 }
 
 /* instruction fetch */
+/*
+we check if the pc is divisible by 4 ( its aligned ) if its not then we have an error
+else we can read the instruction from memory
+we shift left by 2 being dividing by 4 and getting the correct location
+*/
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 {
 
@@ -94,6 +104,9 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
 
 
 /* instruction decode */
+/*
+based on the opcode we will set the control for each function
+*/
 int instruction_decode(unsigned op,struct_controls *controls){
         switch(op){
         
@@ -224,6 +237,11 @@ int instruction_decode(unsigned op,struct_controls *controls){
 }
 
 /* Read Register */
+/*
+not too much commenting needed, 
+just simply reading register data,
+and putting into data1 and data2
+*/
 void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigned *data2)
 {
     *data1 = Reg[r1];
@@ -255,10 +273,9 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
 		data2 = extended_value;
 	}
 
-	//All ALUOps just send instructions to ALU which updates ALU result
-	//ALUOP 7 is R type insturction which requires use of funct
+	//AluOP being 7 is R type insturction which requires use of funct
 	if(ALUOp == 7){
-		//Find the proper ALUOp for each R type instruction
+		//finding the proper ALUOp for each R type instruction
 		switch(funct) {
 
 			//Add
@@ -289,7 +306,7 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
 			case 6:
 					ALUOp = 6;
 					break;
-			//not
+			//Nor
 			case 39:
 					ALUOp = 7;
 					break;
