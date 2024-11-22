@@ -124,7 +124,7 @@ int instruction_decode(unsigned op,struct_controls *controls){
 		    controls->MemRead = 0;
 		    break;
 		
-        //jump
+               //jump
 		case 2: 
         	    controls->MemtoReg = 0;
 		    controls->ALUOp = 0;
@@ -164,7 +164,7 @@ int instruction_decode(unsigned op,struct_controls *controls){
         
        		 // lw
        		case 35:
-        	controls->MemtoReg = 1;
+        	    controls->MemtoReg = 1;
 		    controls->ALUOp = 0;
 		    controls->MemWrite = 0;
 		    controls->ALUSrc = 1;
@@ -322,11 +322,26 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
 
 
 	else{
-	//Send to ALU for non funct
-	ALU(data1,data2,ALUOp,ALUresult,Zero);
+		switch(ALUOp){
+		    case 0:
+	                // addi, sw, jump, lw
+	            case 1:
+	                //beq
+	            case 2:
+	                // slti
+	            case 3:
+	                // sltiu
+	            case 6:
+	                //lui
+			break;
+	            default:
+	                return 1;
+		}
+		//Send to ALU for non funct
+		ALU(data1,data2,ALUOp,ALUresult,Zero);
 	}
 
-	//Return
+	//return normally
 	return 0;
 }
 
